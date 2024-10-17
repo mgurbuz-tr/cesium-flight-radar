@@ -1,0 +1,7 @@
+.menubar-drag {
+  -webkit-app-region: drag;
+}
+
+.menubar {
+  -webkit-app-region: no-drag;
+}
