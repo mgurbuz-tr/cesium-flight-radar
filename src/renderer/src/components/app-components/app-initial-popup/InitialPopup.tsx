@@ -21,7 +21,7 @@ const InitialPopup: React.FC<InitialPopupProps> = ({ onClose }) => {
   const [password, setPassword] = useState<string>('')
   const [isShow, setIsShow] = useState<boolean>(true)
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
     setIsShow(false)
     setUser({ username, password })
@@ -29,7 +29,7 @@ const InitialPopup: React.FC<InitialPopupProps> = ({ onClose }) => {
     onClose()
   }
 
-  const handleEmulate = () => {
+  const handleEmulate = (): void => {
     setIsShow(false)
     setEmulate(true)
     onClose()

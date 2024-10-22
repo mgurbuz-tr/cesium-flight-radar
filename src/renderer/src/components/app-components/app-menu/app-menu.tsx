@@ -11,17 +11,17 @@ import { Button } from '@/components/ui/button'
 import { X } from 'lucide-react'
 import './app-menu.css'
 import FileUploadDialog from '../app-fileupload/FileUploadDialog'
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { useCameraHistoryContext } from '@/context/CameraHistoryContext'
 
-export default function AppMenu() {
+export default function AppMenu(): ReactNode {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-  const handleImportKmlClick = () => {
+  const handleImportKmlClick = (): void => {
     setIsDialogOpen(true)
   }
 
-  const handleDialogClose = () => {
+  const handleDialogClose = (): void => {
     setIsDialogOpen(false)
   }
   const { undoCameraView, redoCameraView } = useCameraHistoryContext()
@@ -53,14 +53,6 @@ export default function AppMenu() {
             <MenubarSeparator />
           </MenubarContent>
         </MenubarMenu>
-        {/* <MenubarMenu>
-          <MenubarTrigger className="font-medium menubar">Account</MenubarTrigger>
-          <MenubarContent>
-            <MenubarItem>Emulate Mode</MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem>Live OpenSky API</MenubarItem>
-          </MenubarContent>
-        </MenubarMenu> */}
       </Menubar>
       <Button variant="ghost" size="icon" className="text-foreground menubar" onClick={quitApp}>
         <X className="h-4 w-4" />

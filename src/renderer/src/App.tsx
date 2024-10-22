@@ -17,7 +17,7 @@ function App(): JSX.Element {
     })
   }, [])
 
-  const initialPopupOnClose = () => {
+  const initialPopupOnClose = (): void => {
     console.log('Popup Closed!')
   }
 

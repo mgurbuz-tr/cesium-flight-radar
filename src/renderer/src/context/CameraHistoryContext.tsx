@@ -17,13 +17,14 @@ export const CameraHistoryProvider: React.FC<CameraHistoryProviderProps> = ({ ch
   const [isUndo, setIsUndo] = useState<number>(0)
   const [isRedo, setIsRedo] = useState<number>(0)
 
-  function undoCameraView() {
+  function undoCameraView(): void {
     setIsUndo(isUndo + 1)
   }
 
-  function redoCameraView() {
+  function redoCameraView(): void {
     setIsRedo(isRedo + 1)
   }
+
   return (
     <CameraHistoryContext.Provider value={{ isRedo, isUndo, undoCameraView, redoCameraView }}>
       {children}

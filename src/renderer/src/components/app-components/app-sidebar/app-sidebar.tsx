@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect, ReactNode } from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -19,7 +19,7 @@ export function AppSidebar({
   flightsInView,
   selectedFlightId,
   setSelectedFlightId
-}: AppSidebarProps) {
+}: Readonly<AppSidebarProps>): ReactNode {
   const [visibleFlights, setVisibleFlights] = useState<any[]>([])
   const [itemsToShow, setItemsToShow] = useState<number>(10)
   const [filterTerm, setFilterTerm] = useState('')

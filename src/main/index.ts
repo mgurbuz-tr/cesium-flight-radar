@@ -1,18 +1,16 @@
 // main/index.ts
 
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
-import { join } from 'path'
+import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import axios from 'axios'
 import https from 'https'
 import fs from 'fs'
-import path from 'path'
 
 let mainWindow: BrowserWindow | null
 let flightDataInterval: NodeJS.Timeout | null = null
 let flightDataFiles: string[] = []
 let currentFileIndex = 0
-let isEmulateMode = false
 
 function createWindow(): void {
   mainWindow = new BrowserWindow({
@@ -21,7 +19,6 @@ function createWindow(): void {
     show: false,
     titleBarStyle: 'hidden',
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? {} : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
@@ -43,7 +40,7 @@ function createWindow(): void {
   })
 
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'] as string)
+    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
@@ -76,31 +73,29 @@ ipcMain.on('set-emulate', () => {
   startEmulateMode()
 })
 
-ipcMain.on('set-api', (event, args) => {
+ipcMain.on('set-api', (_, args) => {
   startApiMode(args[0], args[1])
 })
 
-function startEmulateMode() {
+function startEmulateMode(): void {
   if (flightDataInterval) {
     clearInterval(flightDataInterval)
     flightDataInterval = null
   }
-  isEmulateMode = true
   loadFlightDataFiles()
   startFlightDataLoop()
 }
 
-function startApiMode(userName, password) {
+function startApiMode(userName: string, password: string): void {
   if (flightDataInterval) {
     clearInterval(flightDataInterval)
     flightDataInterval = null
   }
-  isEmulateMode = false
   startFlightDataFetching(userName, password)
 }
 
-function loadFlightDataFiles() {
-  const filesDir = path.join(__dirname, '../../static') 
+function loadFlightDataFiles(): void {
+  const filesDir = path.join(__dirname, '../../static')
   if (!fs.existsSync(filesDir)) {
     console.error(`Flight data directory does not exist: ${filesDir}`)
     return
@@ -112,7 +107,7 @@ function loadFlightDataFiles() {
   currentFileIndex = 0
 }
 
-function startFlightDataLoop() {
+function startFlightDataLoop(): void {
   if (flightDataFiles.length === 0) {
     console.error('No flight data files found.')
     return
@@ -123,7 +118,7 @@ function startFlightDataLoop() {
       const currentFile = flightDataFiles[currentFileIndex]
       const flightData = fs.readFileSync(currentFile, 'utf8')
 
-      if (mainWindow && mainWindow.webContents) {
+      if (mainWindow?.webContents) {
         mainWindow.webContents.send('flight-data', JSON.parse(flightData))
       }
 
@@ -131,28 +126,24 @@ function startFlightDataLoop() {
     } catch (error) {
       console.error('Error reading flight data file:', error)
     }
-  }, 2000) 
+  }, 2000)
 }
 
-function startFlightDataFetching(username: string, password: string) {
+function startFlightDataFetching(username: string, password: string): void {
   flightDataInterval = setInterval(async () => {
     try {
       const httpsAgent = new https.Agent({
-        rejectUnauthorized: false 
+        rejectUnauthorized: false
       })
       const flightData = await axios.get('https://opensky-network.org/api/states/all', {
         httpsAgent,
         auth: {
-          username: username, 
-          password: password 
+          username: username,
+          password: password
         }
       })
 
-      // if (flightData.data) {
-      //   fs.writeFileSync(`flightData_${Date.now()}.json`, JSON.stringify(flightData.data), 'utf8')
-      // }
-
-      if (mainWindow && mainWindow.webContents) {
+      if (mainWindow?.webContents) {
         mainWindow.webContents.send('flight-data', flightData.data)
       }
     } catch (error) {

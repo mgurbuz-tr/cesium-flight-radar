@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import * as Cesium from 'cesium'
 
 /**
@@ -16,7 +16,7 @@ export const useFlightManager = (
   onFlightsInViewChange: (flightsInView: any[]) => void,
   selectedFlightId: string | null,
   setSelectedFlightId: (id: string | null) => void
-) => {
+): void => {
   const flightsRef = useRef<{ [key: string]: Cesium.Entity | any }>({})
   const selectedFlightsRef = useRef<{ [key: string]: boolean }>({})
   const selectedEntityPolylineRef = useRef<Cesium.Entity | null>(null)
@@ -37,7 +37,7 @@ export const useFlightManager = (
   useEffect(() => {
     if (!viewerRef.current) return
 
-    const onCameraChanged = () => {
+    const onCameraChanged = (): void => {
       const flightsInView = getFlightsInView()
       onFlightsInViewChange(flightsInView)
     }
@@ -163,7 +163,7 @@ export const useFlightManager = (
   /**
    * Draws the boundaries of each tile on the Cesium Viewer.
    */
-  function drawTileBoundaries() {
+  function drawTileBoundaries(): void {
     const viewer = viewerRef.current
     if (!viewer) return
 
@@ -198,7 +198,7 @@ export const useFlightManager = (
   /**
    * Initializes the tile matrix covering the entire world based on predefined tile dimensions.
    */
-  const initializeTileMatrix = () => {
+  const initializeTileMatrix = (): void => {
     const tileMatrix = [] as any
 
     for (let y = -90; y < 90; y += tileHeight) {
@@ -225,7 +225,7 @@ export const useFlightManager = (
    *
    * @param flightData - Data containing flight information.
    */
-  const distributeFlightsToTiles = (flightData: any) => {
+  const distributeFlightsToTiles = (flightData: any): void => {
     // Clear existing flight lists
     tileFlightDataRef.current.forEach((_, key) => {
       tileFlightDataRef.current.set(key, [])
@@ -253,7 +253,7 @@ export const useFlightManager = (
    *
    * @param flightData - Data containing flight information.
    */
-  const updateFlightsOnCesium = (flightData: any) => {
+  const updateFlightsOnCesium = (): void => {
     const viewer = viewerRef.current
     if (!viewer) return
 
@@ -350,7 +350,7 @@ export const useFlightManager = (
    */
   const getFlightsInView = (): any[] => {
     const viewer = viewerRef.current
-    if (!viewer || !viewer.scene) return []
+    if (!viewer?.scene) return []
 
     let rectangle: Cesium.Rectangle | undefined
 
@@ -455,11 +455,11 @@ export const useFlightManager = (
     isSelected: boolean,
     callsign: string | null,
     heading: number | undefined
-  ) => {
+  ): void => {
     if (isSelected) {
       entity.billboard = undefined
       entity.label = {
-        text: callsign || '',
+        text: callsign ?? '',
         font: '12pt sans-serif',
         style: Cesium.LabelStyle.FILL_AND_OUTLINE,
         outlineWidth: 2,
@@ -483,7 +483,7 @@ export const useFlightManager = (
   /**
    * Resets all selected flights to their default appearance and state.
    */
-  const resetSelectedFlights = () => {
+  const resetSelectedFlights = (): void => {
     const selectedFlights = selectedFlightsRef.current
     for (const id in selectedFlights) {
       if (selectedFlights[id]) {

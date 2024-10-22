@@ -138,16 +138,15 @@ export const useMeasurement = (viewerRef: React.MutableRefObject<Cesium.Viewer |
       currentMousePositionRef.current = null
     }, Cesium.ScreenSpaceEventType.RIGHT_CLICK)
 
-    return () => {
+    return (): void => {
       handler.destroy()
     }
   }, [isDrawingPoint, isDrawingLine, isDrawingPolygon])
 
-  const updateLineDistanceLabels = () => {
+  const updateLineDistanceLabels = (): void => {
     const viewer = viewerRef.current
     if (!viewer || drawnEntitiesRef.current.length < 2) return
 
-    let totalDistance = 0
     drawnEntitiesRef.current
       .filter((ent) => ent.position && !ent.polyline)
       .forEach((entity, idx, arr) => {
@@ -163,7 +162,7 @@ export const useMeasurement = (viewerRef: React.MutableRefObject<Cesium.Viewer |
         const prevPos = arr[idx - 1].position!.getValue(Cesium.JulianDate.now())
         const currPos = entity.position!.getValue(Cesium.JulianDate.now())
         const distance = Cesium.Cartesian3.distance(prevPos, currPos)
-        totalDistance += distance
+
         entity.label = {
           text: `${(distance / 1000).toFixed(2)} km`,
           font: '12pt sans-serif',
@@ -173,35 +172,35 @@ export const useMeasurement = (viewerRef: React.MutableRefObject<Cesium.Viewer |
       })
   }
 
-  const startDrawingPoint = () => {
+  const startDrawingPoint = (): void => {
     clearDrawings()
     setIsDrawingPoint(true)
     setIsDrawingLine(false)
     setIsDrawingPolygon(false)
   }
 
-  const startDrawingLine = () => {
+  const startDrawingLine = (): void => {
     clearDrawings()
     setIsDrawingPoint(false)
     setIsDrawingLine(true)
     setIsDrawingPolygon(false)
   }
 
-  const startDrawingPolygon = () => {
+  const startDrawingPolygon = (): void => {
     clearDrawings()
     setIsDrawingPoint(false)
     setIsDrawingLine(false)
     setIsDrawingPolygon(true)
   }
 
-  const clearDrawings = () => {
+  const clearDrawings = (): void => {
     const viewer = viewerRef.current
     if (!viewer) return
 
     drawnEntitiesRef.current.forEach((entity) => viewer.entities.remove(entity))
     drawnEntitiesRef.current = []
     viewer.entities.values.forEach((entity) => {
-      if (entity.label && entity.label.text && entity.label.text.getValue().startsWith('Area:')) {
+      if (entity.label?.text?.getValue().startsWith('Area:')) {
         viewer.entities.remove(entity)
       }
     })
