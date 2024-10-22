@@ -1,8 +1,12 @@
-import { useContext, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import * as Cesium from 'cesium'
-import { useCameraHistoryContext } from '@/context/CameraHistoryContext'
 
-export const useCameraHistory = (viewerRef: React.MutableRefObject<Cesium.Viewer | null>) => {
+export const useCameraHistory = (
+  viewerRef: React.MutableRefObject<Cesium.Viewer | null>
+): {
+  undoCameraView: () => void
+  redoCameraView: () => void
+} => {
   const undoStack = useRef<any[]>([])
   const redoStack = useRef<any[]>([])
 
@@ -11,7 +15,7 @@ export const useCameraHistory = (viewerRef: React.MutableRefObject<Cesium.Viewer
 
   useEffect(() => {
     if (!viewerRef.current) return
-    const onCameraChanged = () => {
+    const onCameraChanged = (): void => {
       console.log('Camera changed. isUndoRedoAction:', isUndoRedoAction.current)
       if (!isUndoRedoAction.current) {
         const camera = viewerRef.current!.camera
@@ -33,13 +37,13 @@ export const useCameraHistory = (viewerRef: React.MutableRefObject<Cesium.Viewer
     }
 
     viewerRef.current.camera.changed.addEventListener(onCameraChanged)
-    const onMoveStart = () => {
+    const onMoveStart = (): void => {
       if (isUndoRedoAction.current) {
         console.log('Camera move started due to undo/redo.')
       }
     }
 
-    const onMoveEnd = () => {
+    const onMoveEnd = (): void => {
       if (isUndoRedoAction.current) {
         console.log('Camera move ended for undo/redo.')
         isUndoRedoAction.current = false
@@ -49,7 +53,7 @@ export const useCameraHistory = (viewerRef: React.MutableRefObject<Cesium.Viewer
     viewerRef.current.camera.moveStart.addEventListener(onMoveStart)
     viewerRef.current.camera.moveEnd.addEventListener(onMoveEnd)
     onCameraChanged()
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const handleKeyDown = (event: KeyboardEvent): void => {
       console.log(
         `Key pressed: ${event.code}, ctrlKey: ${event.ctrlKey}, shiftKey: ${event.shiftKey}`
       )
@@ -75,7 +79,7 @@ export const useCameraHistory = (viewerRef: React.MutableRefObject<Cesium.Viewer
     }
   }, [viewerRef.current])
 
-  const undoCameraView = () => {
+  const undoCameraView = (): void => {
     if (undoStack.current.length > 1) {
       const currentView = undoStack.current.pop()!
       redoStack.current.push(currentView)
@@ -91,7 +95,7 @@ export const useCameraHistory = (viewerRef: React.MutableRefObject<Cesium.Viewer
     }
   }
 
-  const redoCameraView = () => {
+  const redoCameraView = (): void => {
     if (redoStack.current.length > 0) {
       const nextView = redoStack.current.pop()!
       undoStack.current.push(nextView)

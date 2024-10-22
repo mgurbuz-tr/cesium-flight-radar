@@ -1,7 +1,9 @@
-import { useEffect, useRef } from 'react'
+import { MutableRefObject, useEffect, useRef } from 'react'
 import * as Cesium from 'cesium'
 
-export const useCesiumViewer = (cesiumContainerRef: React.RefObject<HTMLDivElement>) => {
+export const useCesiumViewer = (
+  cesiumContainerRef: React.RefObject<HTMLDivElement>
+): MutableRefObject<Cesium.Viewer | null> => {
   const viewerRef = useRef<Cesium.Viewer | null>(null)
 
   useEffect(() => {

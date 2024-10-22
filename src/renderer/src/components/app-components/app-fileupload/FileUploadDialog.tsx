@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -17,14 +17,14 @@ interface FileUploadDialogProps {
   onClose: () => void
 }
 
-export default function FileUploadDialog({ isOpen, onClose }: FileUploadDialogProps) {
+const FileUploadDialog = ({ isOpen, onClose }: Readonly<FileUploadDialogProps>): ReactNode => {
   const { addKmlFile } = useContext(UserContext)
   const [file, setFile] = useState<File | null>(null)
   const [progress, setProgress] = useState(0)
   const [isUploading, setIsUploading] = useState(false)
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    if (event.target.files?.[0]) {
       const selectedFile = event.target.files[0]
       if (
         selectedFile.type === 'application/vnd.google-earth.kml+xml' ||
@@ -37,7 +37,7 @@ export default function FileUploadDialog({ isOpen, onClose }: FileUploadDialogPr
     }
   }
 
-  const simulateUpload = () => {
+  const simulateUpload = (): void => {
     setIsUploading(true)
     setProgress(0)
     const interval = setInterval(() => {
@@ -52,7 +52,7 @@ export default function FileUploadDialog({ isOpen, onClose }: FileUploadDialogPr
     }, 500)
   }
 
-  const handleUpload = () => {
+  const handleUpload = (): void => {
     if (file) {
       simulateUpload()
       setTimeout(() => {
@@ -70,7 +70,7 @@ export default function FileUploadDialog({ isOpen, onClose }: FileUploadDialogPr
         <DialogHeader>
           <DialogTitle>Upload File</DialogTitle>
           <DialogDescription>
-            Select the KML file you want to upload and click the "Upload" button.
+            Select the KML file you want to upload and click the &#34;Upload&#34; button.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -104,3 +104,5 @@ export default function FileUploadDialog({ isOpen, onClose }: FileUploadDialogPr
     </Dialog>
   )
 }
+
+export default FileUploadDialog

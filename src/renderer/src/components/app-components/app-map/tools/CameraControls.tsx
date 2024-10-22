@@ -19,7 +19,7 @@ interface CameraControlsProps {
 const CameraControls: React.FC<CameraControlsProps> = ({ viewerRef }) => {
   const moveIntervalRef = useRef<{ [key: string]: number }>({})
 
-  const startPan = (direction: 'north' | 'south' | 'east' | 'west') => {
+  const startPan = (direction: 'north' | 'south' | 'east' | 'west'): void => {
     const viewer = viewerRef.current
     if (!viewer) return
 
@@ -27,7 +27,7 @@ const CameraControls: React.FC<CameraControlsProps> = ({ viewerRef }) => {
 
     const camera = viewer.camera
 
-    const move = () => {
+    const move = (): void => {
       const cameraHeight = viewer.scene.globe.ellipsoid.cartesianToCartographic(
         camera.position
       ).height
@@ -54,14 +54,14 @@ const CameraControls: React.FC<CameraControlsProps> = ({ viewerRef }) => {
     moveIntervalRef.current[direction] = window.setInterval(move, 10)
   }
 
-  const stopPan = (direction: 'north' | 'south' | 'east' | 'west') => {
+  const stopPan = (direction: 'north' | 'south' | 'east' | 'west'): void => {
     if (moveIntervalRef.current[direction]) {
       window.clearInterval(moveIntervalRef.current[direction])
       delete moveIntervalRef.current[direction]
     }
   }
 
-  const startZoom = (isZoomIn: boolean) => {
+  const startZoom = (isZoomIn: boolean): void => {
     const zoomDirection = isZoomIn ? 'in' : 'out'
     if (moveIntervalRef.current[zoomDirection]) return
 
@@ -70,7 +70,7 @@ const CameraControls: React.FC<CameraControlsProps> = ({ viewerRef }) => {
 
     const camera = viewer.camera
 
-    const move = () => {
+    const move = (): void => {
       const cameraHeight = viewer.scene.globe.ellipsoid.cartesianToCartographic(
         camera.position
       ).height
@@ -86,7 +86,7 @@ const CameraControls: React.FC<CameraControlsProps> = ({ viewerRef }) => {
     moveIntervalRef.current[zoomDirection] = window.setInterval(move, 10)
   }
 
-  const stopZoom = (isZoomIn: boolean) => {
+  const stopZoom = (isZoomIn: boolean): void => {
     const zoomDirection = isZoomIn ? 'in' : 'out'
     if (moveIntervalRef.current[zoomDirection]) {
       window.clearInterval(moveIntervalRef.current[zoomDirection])
@@ -94,7 +94,7 @@ const CameraControls: React.FC<CameraControlsProps> = ({ viewerRef }) => {
     }
   }
 
-  const handleOrbit = () => {
+  const handleOrbit = (): void => {
     const viewer = viewerRef.current
     if (!viewer) return
 
@@ -104,14 +104,14 @@ const CameraControls: React.FC<CameraControlsProps> = ({ viewerRef }) => {
 
     const heading = Cesium.Math.toRadians(1)
 
-    const orbit = () => {
+    const orbit = (): void => {
       camera.rotateRight(heading)
     }
 
     moveIntervalRef.current['orbit'] = window.setInterval(orbit, 10)
   }
 
-  const stopOrbit = () => {
+  const stopOrbit = (): void => {
     if (moveIntervalRef.current['orbit']) {
       window.clearInterval(moveIntervalRef.current['orbit'])
       delete moveIntervalRef.current['orbit']

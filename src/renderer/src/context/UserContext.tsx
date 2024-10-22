@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode, useEffect } from 'react'
+import React, { createContext, useState, ReactNode } from 'react'
 
 interface User {
   username: string
@@ -20,7 +20,7 @@ const defaultUserContext: UserContextType = {
   isEmulate: false,
   setUser: () => {},
   setEmulate: () => {},
-  setApiMode: (username: string, password: string) => {},
+  setApiMode: () => {},
   addKmlFile: () => {},
   kmlFiles: []
 }
@@ -33,22 +33,22 @@ interface UserProviderProps {
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
-  const [isEmulate, setEmulateState] = useState<boolean>(false)
+  const [isEmulate, setIsEmulate] = useState<boolean>(false)
   const [kmlFiles, setKmlFiles] = useState<File[]>([])
 
-  const setEmulate = (value: boolean) => {
-    setEmulateState(value)
+  const setEmulate = (value: boolean): void => {
+    setIsEmulate(value)
     if (value) {
       window.flightAPI.setEmulateMode()
     }
   }
 
-  const setApiMode = (username: string, password: string) => {
-    setEmulateState(false)
+  const setApiMode = (username: string, password: string): void => {
+    setIsEmulate(false)
     window.flightAPI.setApiMode(username, password)
   }
 
-  const addKmlFile = (file: File) => {
+  const addKmlFile = (file: File): void => {
     setKmlFiles((prevFiles) => [...prevFiles, file])
   }
 

@@ -1,4 +1,4 @@
-import { useRef, useEffect, useContext } from 'react'
+import { useRef, useEffect, useContext, ReactNode } from 'react'
 import * as Cesium from 'cesium'
 import CameraControls from './tools/CameraControls'
 import { Button } from '@/components/ui/button'
@@ -22,9 +22,9 @@ export default function AppMap({
   onFlightsInViewChange,
   selectedFlightId,
   setSelectedFlightId
-}: AppMapProps) {
+}: Readonly<AppMapProps>): ReactNode {
   const cesiumContainer = useRef<HTMLDivElement | null>(null)
-  const viewerRef = useCesiumViewer(cesiumContainer!)
+  const viewerRef = useCesiumViewer(cesiumContainer)
   useFlightManager(
     viewerRef,
     flightData,
@@ -52,7 +52,7 @@ export default function AppMap({
 
     kmlFiles.forEach((file) => {
       const reader = new FileReader()
-      reader.onload = (e) => {
+      reader.onload = (e): void => {
         const text = e.target?.result
         if (typeof text === 'string') {
           const blob = new Blob([text], { type: 'application/vnd.google-earth.kml+xml' })
