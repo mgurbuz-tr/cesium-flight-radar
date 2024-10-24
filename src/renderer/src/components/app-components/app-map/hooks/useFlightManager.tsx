@@ -49,7 +49,7 @@ export const useFlightManager = (
 
     if (flightData) {
       distributeFlightsToTiles(flightData)
-      updateFlightsOnCesium(flightData)
+      updateFlightsOnCesium()
     }
 
     return () => {
@@ -64,7 +64,7 @@ export const useFlightManager = (
     if (!flightData || !viewerRef.current) return
 
     distributeFlightsToTiles(flightData)
-    updateFlightsOnCesium(flightData)
+    updateFlightsOnCesium()
   }, [flightData])
 
   /**

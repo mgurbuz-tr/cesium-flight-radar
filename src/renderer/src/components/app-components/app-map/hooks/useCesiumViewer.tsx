@@ -23,6 +23,7 @@ export const useCesiumViewer = (
     })
 
     viewerRef.current = viewer
+    viewerRef.current.scene.globe.depthTestAgainstTerrain = true;
 
     return () => {
       viewer.destroy()
